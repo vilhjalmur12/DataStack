@@ -1,0 +1,3 @@
+CREATE USER '${MYSQL_READONLY_USER}'@'%' IDENTIFIED BY '$(cat /run/secrets/mysql_readonly_password)';
+GRANT SELECT ON ${MYSQL_DATABASE}.* TO '${MYSQL_READONLY_USER}'@'%';
+FLUSH PRIVILEGES;

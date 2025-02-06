@@ -1,0 +1,9 @@
+- docker compose setup for dev
+- helm chart for k8 setup
+- nodepools and namespaces for k8
+- dev and prod setup for k8 in helm charts. dev being resource restricted but prod set for larger scale
+- documentation as readme in docs/ 
+  - general
+  - docker compose usage
+  - k8 helm chart usage
+  - 

@@ -1,0 +1,54 @@
+repositories:
+  - name: stable
+    url: https://charts.helm.sh/stable
+
+environments:
+  dev:
+    values:
+      - environments/dev.yaml
+  prod:
+    values:
+      - environments/prod.yaml
+
+releases:
+  - name: mysql
+    namespace: bigdata-core
+    chart: ./helm-charts/mysql
+    values:
+      - ./helm-charts/mysql/values.yaml
+
+  - name: postgres
+    namespace: bigdata-core
+    chart: ./helm-charts/postgres
+    values:
+      - ./helm-charts/postgres/values.yaml
+
+  - name: clickhouse
+    namespace: bigdata-warehouse
+    chart: ./helm-charts/clickhouse
+    values:
+      - ./helm-charts/clickhouse/values.yaml
+
+  - name: airflow
+    namespace: bigdata-etl
+    chart: ./helm-charts/airflow
+    values:
+      - ./helm-charts/airflow/values.yaml
+
+  - name: presto
+    namespace: bigdata-query
+    chart: ./helm-charts/presto
+    values:
+      - ./helm-charts/presto/values.yaml
+
+  - name: grafana
+    namespace: bigdata-bi
+    chart: ./helm-charts/grafana
+    values:
+      - ./helm-charts/grafana/values.yaml
+
+  - name: prometheus
+    namespace: bigdata-monitoring
+    chart: ./helm-charts/prometheus
+    values:
+      - ./helm-charts/prometheus/values.yaml

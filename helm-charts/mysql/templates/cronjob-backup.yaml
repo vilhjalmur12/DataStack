@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mysql-backup
+spec:
+  schedule: "{{ .Values.backup.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: mysql:8.0
+            command: ["/bin/sh", "-c"]
+            args:
+            - "mysqldump -h mysql -u root -p$(MYSQL_ROOT_PASSWORD) mydatabase > /backup/backup.sql"
+          restartPolicy: OnFailure
