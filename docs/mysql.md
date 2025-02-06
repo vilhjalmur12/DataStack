@@ -10,7 +10,7 @@ MySQL is used as the **core relational database** for metadata storage and struc
 ## **⚙️ Environment Variables**
 The MySQL service is configured using **`.env` files** to manage database credentials and storage locations securely.
 
-### **Global Environment Variables (Defined in `big-data-stack/.env`)**
+### **Global Environment Variables (Defined in `DataStack/.env`)**
 ```ini
 GLOBAL_NETWORK=bigdata_network
 MYSQL_MOUNT_LOCATION=/mnt/bigdata/mysql

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      nodeSelector:
+        pool: { { .Values.nodeSelector.pool } }
+      containers:
+        - name: postgres
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "{{ .Values.postgresUser }}"
+            - name: POSTGRES_DB
+              value: "{{ .Values.postgresDatabase }}"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+            - name: POSTGRES_READONLY_USER
+              value: "{{ .Values.postgresReadOnlyUser }}"
+            - name: POSTGRES_READONLY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: readonly-password
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-storage
+            - mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init.sql
+              name: init-script
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+        - name: init-script
+          configMap:
+            name: postgres-init-script

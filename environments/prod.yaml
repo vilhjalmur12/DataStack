@@ -7,3 +7,15 @@ mysql:
     limits:
       memory: "4Gi"
       cpu: "2"
+
+postgres:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "1"
+    limits:
+      memory: "4Gi"
+      cpu: "2"
+  persistence:
+    size: 100Gi

@@ -1,0 +1,32 @@
+namespace: bigdata-core
+nodeSelector:
+  pool: np-storage
+
+image:
+  repository: postgres
+  tag: "15"
+  pullPolicy: IfNotPresent
+
+postgresUser: "myuser"
+postgresPassword: "mypassword"
+postgresReadOnlyUser: "myreadonlyuser"
+postgresReadOnlyPassword: "readonlypassword"
+postgresDatabase: "mydatabase"
+postgresRootPassword: "rootpassword"
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: ""
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "2Gi"
+    cpu: "1"
+
+backup:
+  enabled: true
+  schedule: "0 3 * * *"
