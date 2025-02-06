@@ -22,8 +22,6 @@ create_dir() {
 create_dir "$ROOT_VOLUME"
 create_dir "$LOGS_PATH"
 create_dir "$MYSQL_MOUNT_LOCATION"
+create_dir "$POSTGRES_MOUNT_LOCATION"
 
 echo "🚀 All required directories are now set up!"
-
-
-

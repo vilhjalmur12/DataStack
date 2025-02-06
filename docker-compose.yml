@@ -7,6 +7,14 @@ services:
       - bigdata_network  # Use environment variable for the network
     volumes:
       - mysql-data:/var/lib/mysql
+  postgres:
+    extends:
+      file: ./services/postgres/docker-compose.yml
+      service: postgres
+    networks:
+      - bigdata_network  # Use environment variable for the network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
 networks:
   bigdata_network:  # Define the network at the root level
@@ -19,6 +27,12 @@ volumes:
       type: none
       o: bind
       device: ${MYSQL_MOUNT_LOCATION}
+  postgres-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${POSTGRES_MOUNT_LOCATION}
 
 secrets:
   mysql_root_password:
@@ -27,3 +41,7 @@ secrets:
     file: ./services/mysql/secrets/mysql_user_password.txt
   mysql_readonly_password:
     file: ./services/mysql/secrets/mysql_readonly_password.txt
+  postgres_user_password:
+    file: ./services/postgres/secrets/postgres_user_password.txt
+  postgres_readonly_password:
+    file: ./services/postgres/secrets/postgres_readonly_password.txt

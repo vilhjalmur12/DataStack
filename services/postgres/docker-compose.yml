@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    env_file:
+      - ../../.env  # Load global environment variables
+      - .env        # Load PostgreSQL-specific environment variables
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_PASSWORD_FILE: "/run/secrets/postgres_user_password"
+    secrets:
+      - postgres_user_password
+      - postgres_readonly_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./config/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+secrets:
+  postgres_user_password:
+    file: ./secrets/postgres_user_password.txt
+  postgres_readonly_password:
+    file: ./secrets/postgres_readonly_password.txt
+
+volumes:
+  postgres-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${POSTGRES_MOUNT_LOCATION}
