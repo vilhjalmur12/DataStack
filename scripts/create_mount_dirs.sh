@@ -25,6 +25,6 @@ create_dir "$MYSQL_MOUNT_LOCATION"
 create_dir "$POSTGRES_MOUNT_LOCATION"
 create_dir "$SPARK_MOUNT_LOCATION"
 create_dir "$SPARK_LOGS_MOUNT_LOCATION"
-
+create_dir "$DELTA_LAKE_STORAGE_LOCATION"
 
 echo "🚀 All required directories are now set up!"

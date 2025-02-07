@@ -26,6 +26,7 @@ services:
     volumes:
       - spark-data:/opt/spark/logs
       - spark-logs:/var/log/spark
+      - delta-storage:/opt/spark/storage/delta
 
   spark-worker:
     extends:
@@ -35,6 +36,8 @@ services:
       - bigdata_network
     deploy:
       replicas: 2
+      restart_policy:
+        condition: on-failure
     volumes:
       - spark-data:/opt/spark/logs
       - spark-logs:/var/log/spark
@@ -68,6 +71,12 @@ volumes:
       type: none
       o: bind
       device: ${SPARK_LOGS_MOUNT_LOCATION}
+  delta-storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DELTA_LAKE_STORAGE_LOCATION}
 
 secrets:
   mysql_root_password:

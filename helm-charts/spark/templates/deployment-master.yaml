@@ -2,43 +2,46 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spark-master
-  namespace: {{ .Values.namespace }}
-  labels:
-    app: spark
-    component: master
+  namespace: bigdata-query
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: spark
-      component: master
+      app: spark-master
   template:
     metadata:
       labels:
-        app: spark
-        component: master
+        app: spark-master
     spec:
-      nodeSelector:
-        pool: {{ .Values.nodeSelector.pool }}  # Ensure Master runs on np-query
       containers:
         - name: spark-master
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.spark.master.image.repository }}:{{ .Values.spark.master.image.tag }}"
+          imagePullPolicy: "{{ .Values.spark.master.image.pullPolicy }}"
           env:
-            - name: SPARK_MODE
-              value: "master"
-            - name: SPARK_MASTER_PORT
-              value: "{{ .Values.spark.master.port }}"
-            - name: SPARK_MASTER_WEBUI_PORT
-              value: "{{ .Values.spark.master.webUIPort }}"
+            {{- range $key, $value := .Values.spark.master.env }}
+            - name: "{{ $key }}"
+              value: "{{ $value }}"
+            {{- end }}
           ports:
-            - containerPort: {{ .Values.spark.master.port }}
-            - containerPort: {{ .Values.spark.master.webUIPort }}
+            - containerPort: 7077
+            - containerPort: 8080
           volumeMounts:
-            - name: logs
-              mountPath: /opt/spark/logs
+            - name: spark-data
+              mountPath: "{{ .Values.volumes.spark-data.mountPath }}"
+            - name: spark-logs
+              mountPath: "{{ .Values.volumes.spark-logs.mountPath }}"
+            - name: delta-storage
+              mountPath: "{{ .Values.volumes.delta-storage.mountPath }}"
+
       volumes:
-        - name: logs
+        - name: spark-data
+          persistentVolumeClaim:
+            claimName: spark-data-pvc
+        - name: spark-logs
           persistentVolumeClaim:
             claimName: spark-logs-pvc
+        - name: delta-storage
+          persistentVolumeClaim:
+            claimName: delta-storage-pvc
+
 

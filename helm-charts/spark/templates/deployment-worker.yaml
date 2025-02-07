@@ -22,8 +22,8 @@ spec:
         pool: {{ .Values.spark.worker.nodeSelector.pool }}  # Ensure Workers run on np-query
       containers:
         - name: spark-worker
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.spark.image.repository }}:{{ .Values.spark.image.tag }}"
+          imagePullPolicy: {{ .Values.spark.image.pullPolicy }}
           env:
             - name: SPARK_MODE
               value: "worker"

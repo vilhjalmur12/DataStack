@@ -4,18 +4,50 @@ nodeSelector:
   pool: np-query  # Ensure Spark runs on high-memory nodes
 
 spark:
+  image:
+    repository: "bitnami/spark:3.5"  # Use custom image
+    tag: "3.5"
+    pullPolicy: IfNotPresent  # Avoid pulling if already built locally
+
   master:
+    image:
+      repository: "my-registry/spark-custom"  # Use custom image
+      tag: "latest"
+      pullPolicy: IfNotPresent  # Avoid pulling if already built locally
     serviceType: ClusterIP
     port: 7077
     webUIPort: 8080
+    env:
+      SPARK_MODE: "master"
+      SPARK_RPC_AUTHENTICATION_ENABLED: "no"
+      SPARK_RPC_ENCRYPTION_ENABLED: "no"
+      SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED: "no"
+      SPARK_SSL_ENABLED: "no"
+      SPARK_HISTORY_OPTS: "-Dspark.history.fs.logDirectory=file:///opt/spark/logs"
+      SPARK_EXTRA_CLASSPATHS: "/opt/spark/jars/*"
+
   worker:
     replicas: 2
     memory: "4G"
     cores: 2
-    nodeSelector:
-      pool: np-query  # Workers will also run on np-query
-  eventLog:
-    enabled: true
-    directory: "file:///opt/spark/logs"
+    env:
+      SPARK_MODE: "worker"
+      SPARK_MASTER_URL: "spark://spark-master:7077"
+
+  volumes:
+    spark-data:
+      mountPath: "/opt/spark/logs"
+      storageClass: "standard"
+
+    spark-logs:
+      mountPath: "/var/log/spark"
+      storageClass: "standard"
+
+    delta-storage:
+      mountPath: "/opt/spark/storage/delta"
+      storageClass: "standard"
+
+  nodeSelector:
+    pool: np-query  # Assign Spark to the correct node pool
 
 

@@ -1,6 +1,8 @@
 services:
   spark-master:
-    image: bitnami/spark:3.5
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: spark-master
     hostname: spark-master
     environment:
@@ -10,9 +12,11 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
       - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=file:///opt/spark/logs
+      - SPARK_EXTRA_CLASSPATHS="/opt/spark/jars/*"
     volumes:
       - spark-data:/opt/spark/logs
       - spark-logs:/var/log/spark
+      - delta-storage:/opt/spark/storage/delta
       - ./config/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
     ports:
       - "7077:7077"
@@ -26,8 +30,8 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=${SPARK_WORKER_MEMORY}
-      - SPARK_WORKER_CORES=${SPARK_WORKER_CORES}
+      #- SPARK_WORKER_MEMORY=${SPARK_WORKER_MEMORY}
+      #- SPARK_WORKER_CORES=${SPARK_WORKER_CORES}
     volumes:
       - spark-data:/opt/spark/logs
       - spark-logs:/var/log/spark
@@ -53,4 +57,10 @@ volumes:
       type: none
       o: bind
       device: ${SPARK_LOGS_MOUNT_LOCATION}
+  delta-storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DELTA_LAKE_STORAGE_LOCATION}
 
