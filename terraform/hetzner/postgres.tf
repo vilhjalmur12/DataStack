@@ -1,17 +1,18 @@
 resource "hcloud_server" "postgres" {
-  name        = "postgres-server"
+  name        = "postgres-db"
   image       = "ubuntu-22.04"
-  server_type = var.postgres_instance_type
-  location    = var.postgres_location
-  ssh_keys    = ["default"]
-  user_data   = file("init-postgres.sh")
-}
+  server_type = "cpx21"  # 4 vCPUs, 8GB RAM
+  location    = var.region
+  ssh_keys    = [hcloud_ssh_key.default.name]
+  firewall_ids = [hcloud_firewall.postgres.id]
 
-resource "hcloud_volume" "postgres_data" {
-  name      = "postgres-data-volume"
-  size      = var.postgres_volume_size
-  location  = var.postgres_location
-  server_id = hcloud_server.postgres.id
-  format    = "ext4"
-  automount = true
+  labels = {
+    role  = "postgres"
+    group = "bigdata-core"
+  }
+
+  user_data = <<-EOF
+    #!/bin/bash
+    echo "POSTGRES_HOST=postgres-db" >> /etc/environment
+  EOF
 }

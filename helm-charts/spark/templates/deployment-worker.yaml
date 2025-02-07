@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-worker
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: spark
+    component: worker
+spec:
+  replicas: {{ .Values.spark.worker.replicas }}
+  selector:
+    matchLabels:
+      app: spark
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: spark
+        component: worker
+    spec:
+      nodeSelector:
+        pool: {{ .Values.spark.worker.nodeSelector.pool }}  # Ensure Workers run on np-query
+      containers:
+        - name: spark-worker
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SPARK_MODE
+              value: "worker"
+            - name: SPARK_MASTER_URL
+              value: "spark://spark-master:7077"
+            - name: SPARK_WORKER_MEMORY
+              value: "{{ .Values.spark.worker.memory }}"
+            - name: SPARK_WORKER_CORES
+              value: "{{ .Values.spark.worker.cores }}"
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - name: logs
+              mountPath: /opt/spark/logs
+      volumes:
+        - name: logs
+          persistentVolumeClaim:
+            claimName: spark-logs-pvc
+

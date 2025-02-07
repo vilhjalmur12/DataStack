@@ -1,0 +1,21 @@
+namespace: bigdata-query  # Deploy Spark in the bigdata-query namespace
+
+nodeSelector:
+  pool: np-query  # Ensure Spark runs on high-memory nodes
+
+spark:
+  master:
+    serviceType: ClusterIP
+    port: 7077
+    webUIPort: 8080
+  worker:
+    replicas: 2
+    memory: "4G"
+    cores: 2
+    nodeSelector:
+      pool: np-query  # Workers will also run on np-query
+  eventLog:
+    enabled: true
+    directory: "file:///opt/spark/logs"
+
+

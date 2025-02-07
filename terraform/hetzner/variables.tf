@@ -4,6 +4,12 @@ variable "hcloud_token" {
   sensitive   = true
 }
 
+variable "region" {
+  description = "Hetzner Cloud region"
+  type        = string
+  default     = "fsn1"  # Falkenstein, Germany
+}
+
 # PostgreSQL Variables
 variable "postgres_instance_type" {
   description = "Hetzner instance type for PostgreSQL"
@@ -40,4 +46,23 @@ variable "mysql_volume_size" {
   description = "Size of the MySQL storage volume"
   type        = number
   default     = 50
+}
+
+# Spark variables
+variable "spark_node_count" {
+  description = "Number of Spark worker nodes"
+  type        = number
+  default     = 3
+}
+
+variable "spark_instance_type" {
+  description = "Hetzner instance type for Spark nodes"
+  type        = string
+  default     = "cpx31"  # 8 vCPUs, 16GB RAM
+}
+
+variable "ssh_key_name" {
+  description = "SSH key name for access"
+  type        = string
+  default     = "bigdata-key"
 }

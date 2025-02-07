@@ -19,3 +19,32 @@ postgres:
       cpu: "500m"
   persistence:
     size: 5Gi
+
+spark:
+  replicaCount: 2
+  image:
+    tag: "3.5"
+
+  spark:
+    master:
+      serviceType: ClusterIP
+      port: 7077
+      webUIPort: 8080
+    worker:
+      replicas: 2
+      memory: "2G"
+      cores: 1
+    eventLog:
+      enabled: true
+      directory: "file:///opt/spark/logs"
+
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: standard
+
+  nodeSelector:
+    pool: np-query  # Dev uses np-query with smaller resource allocation
+
+
+

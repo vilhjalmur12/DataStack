@@ -2,6 +2,9 @@ repositories:
   - name: stable
     url: https://charts.helm.sh/stable
 
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+
 environments:
   dev:
     values:
@@ -23,32 +26,10 @@ releases:
     values:
       - ./helm-charts/postgres/values.yaml
 
-  - name: clickhouse
-    namespace: bigdata-warehouse
-    chart: ./helm-charts/clickhouse
-    values:
-      - ./helm-charts/clickhouse/values.yaml
-
-  - name: airflow
-    namespace: bigdata-etl
-    chart: ./helm-charts/airflow
-    values:
-      - ./helm-charts/airflow/values.yaml
-
-  - name: presto
+  - name: spark
     namespace: bigdata-query
-    chart: ./helm-charts/presto
+    chart: ./helm-charts/spark
     values:
-      - ./helm-charts/presto/values.yaml
+      - ./helm-charts/spark/values.yaml
+      - environments/{{ .Environment.Name }}.yaml  # Load env-specific configs
 
-  - name: grafana
-    namespace: bigdata-bi
-    chart: ./helm-charts/grafana
-    values:
-      - ./helm-charts/grafana/values.yaml
-
-  - name: prometheus
-    namespace: bigdata-monitoring
-    chart: ./helm-charts/prometheus
-    values:
-      - ./helm-charts/prometheus/values.yaml

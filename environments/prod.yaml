@@ -19,3 +19,30 @@ postgres:
       cpu: "2"
   persistence:
     size: 100Gi
+
+spark:
+  replicaCount: 3
+  image:
+    tag: "3.5"
+
+  spark:
+    master:
+      serviceType: LoadBalancer  # Expose master externally in prod
+      port: 7077
+      webUIPort: 8080
+    worker:
+      replicas: 5
+      memory: "8G"
+      cores: 4
+    eventLog:
+      enabled: true
+      directory: "file:///opt/spark/logs"
+
+  persistence:
+    enabled: true
+    size: 20Gi
+    storageClass: premium-ssd
+
+  nodeSelector:
+    pool: np-query  # High-performance query nodes in production
+

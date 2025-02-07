@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-master
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: spark
+    component: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark
+      component: master
+  template:
+    metadata:
+      labels:
+        app: spark
+        component: master
+    spec:
+      nodeSelector:
+        pool: {{ .Values.nodeSelector.pool }}  # Ensure Master runs on np-query
+      containers:
+        - name: spark-master
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SPARK_MODE
+              value: "master"
+            - name: SPARK_MASTER_PORT
+              value: "{{ .Values.spark.master.port }}"
+            - name: SPARK_MASTER_WEBUI_PORT
+              value: "{{ .Values.spark.master.webUIPort }}"
+          ports:
+            - containerPort: {{ .Values.spark.master.port }}
+            - containerPort: {{ .Values.spark.master.webUIPort }}
+          volumeMounts:
+            - name: logs
+              mountPath: /opt/spark/logs
+      volumes:
+        - name: logs
+          persistentVolumeClaim:
+            claimName: spark-logs-pvc
+

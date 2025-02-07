@@ -1,0 +1,9 @@
+apiVersion: v2
+name: spark
+description: Apache Spark cluster for Big Data Stack
+type: application
+version: 0.1.0
+appVersion: "3.5"
+maintainers:
+  - name: Vilhjalmur Vilhjalmsson
+    email: vilhjalmsonrn@gmail.com
