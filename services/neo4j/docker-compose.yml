@@ -1,0 +1,49 @@
+services:
+  neo4j:
+    image: neo4j:5.9
+    container_name: neo4j
+    restart: always
+    environment:
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD}
+      - NEO4J_server_memory_heap_initial__size=${NEO4J_server_memory_heap_initial__size}
+      - NEO4J_server_memory_heap_max__size=${NEO4J_server_memory_heap_max__size}
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+    ports:
+      - "7474:7474"  # Neo4j Browser
+      - "7687:7687"  # Bolt Protocol
+      - "7473:7473"  # HTTPS
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - neo4j-plugins:/var/lib/neo4j/plugins
+      - neo4j-imports:/var/lib/neo4j/import
+
+
+volumes:
+  neo4j-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${NEO4J_MOUNT_LOCATION}
+  neo4j-logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${NEO4J_LOGS_MOUNT_LOCATION}
+  neo4j-plugins:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${NEO4J_PLUGINS_MOUNT_LOCATION}
+  neo4j-imports:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${NEO4J_IMPORTS_MOUNT_LOCATION}

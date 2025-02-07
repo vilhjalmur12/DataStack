@@ -26,5 +26,10 @@ create_dir "$POSTGRES_MOUNT_LOCATION"
 create_dir "$SPARK_MOUNT_LOCATION"
 create_dir "$SPARK_LOGS_MOUNT_LOCATION"
 create_dir "$DELTA_LAKE_STORAGE_LOCATION"
+create_dir "$NEO4J_MOUNT_LOCATION"
+create_dir "$NEO4J_LOGS_MOUNT_LOCATION"
+create_dir "$NEO4J_PLUGINS_MOUNT_LOCATION"
+create_dir "$NEO4J_IMPORTS_MOUNT_LOCATION"
+
 
 echo "🚀 All required directories are now set up!"

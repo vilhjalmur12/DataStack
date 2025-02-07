@@ -42,6 +42,14 @@ services:
       - spark-data:/opt/spark/logs
       - spark-logs:/var/log/spark
 
+  neo4j:
+    extends:
+      file: ./services/neo4j/docker-compose.yml
+      service: neo4j
+    networks:
+      - bigdata_network
+
+
 networks:
   bigdata_network:  # Define the network at the root level
     driver: bridge
@@ -77,6 +85,30 @@ volumes:
       type: none
       o: bind
       device: ${DELTA_LAKE_STORAGE_LOCATION}
+  neo4j-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${NEO4J_MOUNT_LOCATION}
+  neo4j-logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${NEO4J_LOGS_MOUNT_LOCATION}
+  neo4j-plugins:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${NEO4J_PLUGINS_MOUNT_LOCATION}
+  neo4j-imports:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${NEO4J_IMPORTS_MOUNT_LOCATION}
 
 secrets:
   mysql_root_password:
