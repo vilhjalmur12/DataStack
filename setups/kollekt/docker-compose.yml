@@ -1,0 +1,30 @@
+services:
+  mysql:
+    extends:
+      file: ../../services/mysql/docker-compose.yml
+      service: mysql
+    networks:
+      - datastack_network  # Use environment variable for the network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+
+networks:
+  datastack_network:  # Define the network at the root level
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${MYSQL_MOUNT_LOCATION}
+
+secrets:
+  mysql_root_password:
+    file: ../../services/mysql/secrets/mysql_root_password.txt
+  mysql_user_password:
+    file: ../../services/mysql/secrets/mysql_user_password.txt
+  mysql_readonly_password:
+    file: ../../services/mysql/secrets/mysql_readonly_password.txt
